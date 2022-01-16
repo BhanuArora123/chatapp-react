@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
+import DashBoard from './components/DashBoard/DashBoard';
 import Login from './components/Login';
 import { authActions } from './store/auth';
 
@@ -34,6 +35,8 @@ function App() {
         <Route path="/login" element={ auth.loggedIn ? <></> : <Login routeName="Login" /> }>
         </Route>
         <Route path="/signup" element={ auth.loggedIn ? <></> : <Login routeName="Signup" /> }>
+        </Route>
+        <Route path="/dashBoard" element={ <DashBoard></DashBoard> }>
         </Route>
       </Routes>
     </div>
