@@ -30,13 +30,15 @@ function App() {
             }
     <div className="App">
       <Routes>
-        <Route path="/" element={auth.loggedIn ? <></> :<Navigate to="/login" /> }>
+        <Route path="/" element={auth.loggedIn ? <Navigate to="/dashBoard" /> :<Navigate to="/login" /> }>
         </Route>
-        <Route path="/login" element={ auth.loggedIn ? <></> : <Login routeName="Login" /> }>
+        <Route path="/login" element={ auth.loggedIn ? <Navigate to="/dashBoard" /> : <Login routeName="Login" /> }>
         </Route>
-        <Route path="/signup" element={ auth.loggedIn ? <></> : <Login routeName="Signup" /> }>
+        <Route path="/signup" element={ auth.loggedIn ? <Navigate to="/dashBoard" /> : <Login routeName="Signup" /> }>
         </Route>
-        <Route path="/dashBoard" element={ <DashBoard></DashBoard> }>
+        <Route path="/dashBoard" element={ <Navigate to="/dashBoard/chats" /> }>
+        </Route>
+        <Route path="/dashBoard/:component" element={ <DashBoard></DashBoard> }>
         </Route>
       </Routes>
     </div>

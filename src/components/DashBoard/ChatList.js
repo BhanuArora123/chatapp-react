@@ -3,6 +3,7 @@ import { Search } from "@mui/icons-material"
 import { Box, makeStyles, TextField, Typography } from "@mui/material"
 import { FormControl, InputGroup } from "react-bootstrap";
 import Chat from "./Chats/Chat";
+import "./scrollbarCSS.css";
 const style = {
     multilineColor: {
         color: "white",
@@ -40,8 +41,9 @@ const ChatList = props => {
             justifyContent: "space-evenly",
             alignItems: "center",
             flexDirection: "column",
-            color: "white"
-        } }>
+            color: "white",
+            overflow :"scroll"
+        } } className="scrollElement">
             <Typography variant="h5" sx={ {
                 width: "90%",
                 height: "30px",

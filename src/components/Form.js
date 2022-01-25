@@ -34,6 +34,8 @@ const Form = props => {
     console.log({ isEmailNotValid , isPasswordNotValid ,formIsNotValid , isValid });
     const emailHandler = (event) => {
         setEmail(event.target.value);
+        setIsPasswordTouched(true);
+        setFormTouched(true);
     }
     const emailFocusHandler = () => {
         setIsEmailTouched(true);
@@ -45,6 +47,8 @@ const Form = props => {
     }
     const passHandler = event => {
         setPassword(event.target.value);
+        setIsEmailTouched(true);
+        setFormTouched(true);
     }
     // use styles to 
     const useStyles = makeStyles({
@@ -87,7 +91,7 @@ const Form = props => {
                 <Typography variant="body1" className={classes.emailLabel} sx={{
                     fontWeight : "bold"
                 }}>Email</Typography>
-                <TextField id="filled-basic" className={classes.emailInput} variant="standard" placeholder="Email" InputProps={{
+                <TextField id="filled-basic" autoComplete="off" className={classes.emailInput} variant="standard" placeholder="Email" InputProps={{
                     className : styling.emailStyle,
                     startAdornment: (
                         <InputAdornment position="start">
@@ -103,8 +107,9 @@ const Form = props => {
                 }}>Password</Typography>
                     <Link to="/forgotPassword" className={classes.forgotPassword + " " + classes.link}>Forgot Password</Link>
                 </Box>
-                <TextField id="filled-basic" variant="standard" type="password" placeholder="Password" className={classes.passInput} InputProps={{
+                <TextField id="filled-basic" autoComplete="new-password" variant="standard" type="password" placeholder="Password" className={classes.passInput} InputProps={{
                     className : styling.passStyle,
+                    // autoComplete :"nope",
                     startAdornment: (
                         <InputAdornment position="start">
                           <VpnKeyIcon />

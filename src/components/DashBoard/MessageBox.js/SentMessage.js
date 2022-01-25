@@ -5,7 +5,7 @@ import { FormControl, InputGroup } from "react-bootstrap";
 const useStyles = makeStyles({
     button : {
         "&:hover":{
-            backgroundColor : "#7269ef"
+            backgroundColor : "lightgreen"
         }
     }
 })
@@ -19,7 +19,7 @@ const SentMessage = props => {
             display : "flex",
             justifyContent : "space-between",
             alignItems : "center",
-            color : "#7269ef"
+            color : "white"
         }}>
             <InputGroup className="mb-3" style={{
                 width : "60%",
@@ -53,10 +53,10 @@ const SentMessage = props => {
                 <FileUpload></FileUpload>
                 <Image></Image>
                 <Button variant="contained" sx={{
-                    backgroundColor : "#7269ef"
+                    backgroundColor : "lightgreen"
                 }} className={styling.button}>
                     <Send sx={{
-                        color : "white"
+                        color : "black"
                     }}></Send>
                 </Button>
             </Box>
