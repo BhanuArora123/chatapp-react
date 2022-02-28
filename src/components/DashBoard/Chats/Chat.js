@@ -24,7 +24,7 @@ const Chat = props => {
             boxSizing : "border-box",
             padding : "10px",
             cursor : "pointer"
-        }} className = {classes.hovering}>
+        }} className = {classes.hovering} onClick={props.onclick ? props.onclick : () => {}}>
             <Box sx={{
                 width : "20%",
                 height : "100%",
@@ -35,7 +35,7 @@ const Chat = props => {
             <Avatar sx={{
                 width : "45px",
                 height : "45px"
-            }} alt="Remy Sharp" src={logo} />
+            }} alt={props.name} src={props.profilePic} />
             </Box>
             <Box sx={{
                 width : "80%",

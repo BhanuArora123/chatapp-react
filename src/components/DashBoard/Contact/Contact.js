@@ -36,7 +36,7 @@ const Contact= props => {
             <Avatar sx={{
                 width : "45px",
                 height : "45px"
-            }} alt="Remy Sharp" src={logo} />
+            }} alt="Remy Sharp" src={props.profilePic} />
             </Box>
             <Box sx={{
                 width : "80%",

@@ -1,11 +1,13 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Typography } from "@mui/material"
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Image } from "react-bootstrap";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import logo from "../../logo.png";
 import MenuBar from "./MenuItem/Menu";
 import "./scrollbarCSS.css";
+import { useSelector } from "react-redux";
 const Settings = props => {
+    const auth = useSelector(state => state.auth).userData;
     return (
         <Box sx={{
             width : "30%",
@@ -35,16 +37,18 @@ const Settings = props => {
                 flexDirection : "column",
                 height : "30%"
             }}>
-                <Image width="80px" height="80px" style={{
-                    borderRadius : "50%"
-                }} src={ logo } rounded></Image>
+                <Avatar style={{
+                    borderRadius : "50%",
+                    width : "80px",
+                    height : "80px"
+                }} src={ auth.profilePic } rounded></Avatar>
                 <Typography sx={{
                     width : "90%",
                     height : "10%",
                     display : "flex",
                     justifyContent : "center",
                     alignItems : "center"
-                }}>User 1</Typography>
+                }}>{auth.name}</Typography>
                 <Typography sx={{
                     width : "90%",
                     height : "10%",
@@ -73,8 +77,7 @@ const Settings = props => {
                     </AccordionSummary>
                     <AccordionDetails>
                         <Typography>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                            {auth.status}
                         </Typography>
                     </AccordionDetails>
                 </Accordion>

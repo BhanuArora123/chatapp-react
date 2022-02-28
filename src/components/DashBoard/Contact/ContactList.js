@@ -5,7 +5,9 @@ import "../scrollbarCSS.css";
 
 const ContactList = props => {
     console.log(props.contacts);
-    const [contacts, setContacts] = useState(props.contacts);
+    const contactsArr = JSON.parse(JSON.stringify(props.contacts));
+    let setMembers = props.setMembers;
+    const [contacts, setContacts] = useState(contactsArr);
     const handleToggle = (value) => () => {
         setContacts((prev) => {
             let curr = [...prev];
@@ -14,6 +16,7 @@ const ContactList = props => {
             }else{
                 curr[value].checked = !(curr[value].checked);
             }
+            setMembers(curr);
             return curr; 
         });
     }
@@ -45,7 +48,7 @@ const ContactList = props => {
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`${value.name}(${value.email})`} />
+              <ListItemText id={labelId} primary={`${value.contactId.name}(${value.contactId.email})`} />
             </ListItemButton>
           </ListItem>
         );

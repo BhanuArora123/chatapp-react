@@ -8,8 +8,17 @@ import { Route, Routes , useParams } from "react-router-dom";
 import Group from "./Group";
 import Contacts from "./Contacts";
 import Settings from "./Settings";
+import { useEffect } from "react";
+import { getUserData } from "../../store/auth";
+import { useDispatch, useSelector } from "react-redux";
+
 const DashBoard = props => {
+    const dispatch = useDispatch();
+    const authData = useSelector(state => state.auth);
     const { component } = useParams();
+    useEffect(() => {
+        dispatch(getUserData(authData.token));
+    },[component]);
     return (
         <Box sx={{
             width : "100%",

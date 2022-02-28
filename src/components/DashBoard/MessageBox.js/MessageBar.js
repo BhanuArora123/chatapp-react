@@ -1,7 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import { MoreHoriz, Person, Phone, Search, VideoCall } from "@mui/icons-material"
+import { useSelector } from "react-redux";
 
 const MessageBar = props => {
+    const chatData = useSelector(state => state.chat);
+    const groupData = useSelector(state => state.group);
+    let chatType = props.chatType;
     return (
         <Box sx={{
             width : "100%",
@@ -23,7 +27,7 @@ const MessageBar = props => {
                 }}></img>
                 <Typography sx={{
                     margin : "10px"
-                }} variant="body1">{props.name}</Typography>
+                }} variant="body1">{chatType === "groups"?groupData.groupName:chatData.currentUserName}</Typography>
             </Box>
             <Box sx={{
                 width : "30%",

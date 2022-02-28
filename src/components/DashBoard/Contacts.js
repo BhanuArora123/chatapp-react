@@ -9,18 +9,58 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import "./scrollbarCSS.css";
 import { useState } from "react"
 import Modal from "./Modals/Modal"
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { useDispatch } from "react-redux"
+import { notiActions } from "../../store/noti";
+import { contactAction } from "../../store/contacts";
 const Contacts = props => {
-    const contacts = [
-        {
-            name: "Nikhil Arora"
-        },
-        {
-            name: "Abhishek Vats",
-        },
-        {
-            name: "Jyoti Arora"
+    // const contacts = [
+    //     {
+    //         name: "Nikhil Arora"
+    //     },
+    //     {
+    //         name: "Abhishek Vats",
+    //     },
+    //     {
+    //         name: "Jyoti Arora"
+    //     }
+    // ];
+    const auth = useSelector(state => state.auth);
+    const [contactEmail , setContactEmail] = useState();
+    const [contactName , setContactName] = useState();
+    const dispatch = useDispatch();
+    const addContactHandler = async () => {
+        let contactData = await axios.post("https://chatappbackend123456.herokuapp.com/addContact",{
+            name : contactName,
+            email : contactEmail
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + auth.token
+            }
+        })
+        if(contactData.status !== 200 && contactData.status !== 201){
+            dispatch(notiActions.changeNoti({
+                notiData : {
+                    type : "error",
+                    message : contactData.data.message
+                }
+            }));
         }
-    ];
+        console.log(contactData.data.contacts);
+        dispatch(contactAction.addContacts({
+            contacts : contactData.data.contacts
+        }));
+        setOpen(false);
+    }
+    const contactEmailHandler = (event) => {
+        setContactEmail(event.target.value);
+    }
+    const contactNameHandler = (event) => {
+        setContactName(event.target.value);
+    }
+    const contacts = useSelector(state => state.contact).contacts;
     const [open, setOpen] = useState(false);
     const handleClose = (event) => {
         event.stopPropagation();
@@ -96,7 +136,7 @@ const Contacts = props => {
                 {
                     contacts.map((group) => {
                         return (
-                            <Contact { ...group } />
+                            <Contact { ...group.contactId } />
                         )
                     })
                 }
@@ -139,7 +179,7 @@ const Contacts = props => {
                         <Box sx={{
                             width : "90%"
                         }}>
-                            <TextField id="filled-basic" autoComplete="new-password" variant="outlined" type="email" placeholder="Email" label="Email" InputProps={ {
+                            <TextField id="filled-basic" onChange={contactEmailHandler} autoComplete="new-password" variant="outlined" type="email" placeholder="Email" label="Email" InputProps={ {
                                 // autoComplete :"nope",
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -154,7 +194,7 @@ const Contacts = props => {
                         <Box sx={{
                             width : "90%"
                         }}>
-                            <TextField id="filled-basic" autoComplete="new-password" variant="outlined" type="text" placeholder="Name" label="Name" InputProps={ {
+                            <TextField id="filled-basic" autoComplete="new-password" variant="outlined" type="text" onChange={contactNameHandler} placeholder="Name" label="Name" InputProps={ {
                                 // autoComplete :"nope",
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -173,7 +213,7 @@ const Contacts = props => {
                         }}>
                             <Button variant="contained" sx={{
                                 height : "45px"
-                            }}>
+                            }} onClick={addContactHandler}>
                                 Add Contact
                             </Button>
                         </Box>

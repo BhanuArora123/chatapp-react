@@ -36,7 +36,7 @@ function App() {
         </Route>
         <Route path="/signup" element={ auth.loggedIn ? <Navigate to="/dashBoard" /> : <Login routeName="Signup" /> }>
         </Route>
-        <Route path="/dashBoard" element={ <Navigate to="/dashBoard/chats" /> }>
+        <Route path="/dashBoard" element={ auth.loggedIn ? <Navigate to="/dashBoard/chats" /> : <Login routeName="Login" /> }>
         </Route>
         <Route path="/dashBoard/:component" element={ <DashBoard></DashBoard> }>
         </Route>

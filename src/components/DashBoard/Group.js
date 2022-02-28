@@ -1,30 +1,20 @@
 import { Typography } from "@material-ui/core"
 import { GroupAdd, GroupAddSharp, GroupOutlined, Groups, PersonAdd, Search } from "@mui/icons-material"
 import { Box, Button, InputAdornment, TextField } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { InputGroup , FormControl} from "react-bootstrap"
+import { useSelector , useDispatch } from "react-redux"
+import { addGroup, fetchGroupChats, getGroups, groupActions } from "../../store/group"
 import Chat from "./Chats/Chat"
 import ContactList from "./Contact/ContactList"
 import Modal from "./Modals/Modal"
 import "./scrollbarCSS.css";
 const Group = props => {
-    const groups = [
-        {
-            name : "chit chat code",
-            desc:"some desc",
-            lastMessageTime:"07:40"
-        },
-        {
-            name : "brawlhalla",
-            desc:"some desc",
-            lastMessageTime:"07:40"
-        },
-        {
-            name : "Clapingo",
-            desc:"some desc",
-            lastMessageTime:"07:40"
-        }
-    ];
+    const [groupIcon , setGroupIcon] = useState();
+    const [groupName , setGroupName] = useState();
+    const auth = useSelector(state => state.auth);
+    const groupData = useSelector(state => state.group);
+    const contactData = useSelector(state => state.contact);
     const [open, setOpen] = useState(false);
     const handleClose = (event) => {
         event.stopPropagation();
@@ -34,6 +24,49 @@ const Group = props => {
         event.stopPropagation();
         setOpen(!open);
     };
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getGroups(auth.token));
+    },[]);
+    const DisplayGrpMsgHandler = (group) => {
+        return () => {
+            dispatch(groupActions.updateGroupData({
+                groupName : group.groupId.groupName,
+                groupIcon : group.groupId.groupIcon,
+                groupMembers : group.groupId.members,
+                groupAdmin:group.groupId.creatorId
+            }))
+            dispatch(fetchGroupChats(auth.token,group.groupId.groupName,group.groupId.creatorId));
+        }
+    }
+    const [members, setMembers] = useState([]);
+    const groupIconHandler = (event) => {
+        console.log(event.target.files[0]);
+        setGroupIcon(event.target.files[0]);
+    }
+    const groupNameHandler = (event) => {
+        setGroupName(event.target.value);
+    }
+    const addGroupHandler = () => {
+        const groupMembers = members.filter(member => {
+            if(member.checked){
+                console.log(member._id);
+                return member.contactId._id.toString();
+            }else {
+                return undefined;
+            }
+        }).map(member => {
+            return {memberId : member.contactId._id.toString()};
+        })
+        console.log(groupMembers);
+        let formData = new FormData();
+        formData.append("groupName",groupName);
+        formData.append("members",JSON.stringify(groupMembers));
+        if(groupIcon){
+            formData.append("groupIcon",groupIcon);
+        }
+        dispatch(addGroup(formData,auth.token));
+    }
     return (
         <Box sx={{
             width : "30%",
@@ -95,9 +128,9 @@ const Group = props => {
                 width: "90%"
             } }>
                 {
-                    groups.map((group) => {
+                    groupData.groups.map((group) => {
                         return (
-                            <Chat {...group}>
+                            <Chat name={group.groupId.groupName} desc={group.groupId.groupDesc} profilePic={group.groupId.groupIcon} onclick={DisplayGrpMsgHandler(group)}>
                         </Chat>
                         )
                     })
@@ -141,7 +174,7 @@ const Group = props => {
                         <Box sx={{
                             width : "90%"
                         }}>
-                            <TextField id="filled-basic" autoComplete="new-password" variant="outlined" type="email" placeholder="Group Name" label="Group Name" InputProps={ {
+                            <TextField id="filled-basic" autoComplete="new-password" variant="outlined" type="text" placeholder="Group Name" label="Group Name" InputProps={ {
                                 // autoComplete :"nope",
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -151,7 +184,7 @@ const Group = props => {
                             } } sx={{
                                 width : "100%",
                                 height : "30px"
-                            }} />
+                            }} onChange={groupNameHandler} />
                         </Box>
                         <Box sx={{
                             width : "90%"
@@ -166,7 +199,7 @@ const Group = props => {
                             } } sx={{
                                 width : "100%",
                                 height : "30px"
-                            }} />
+                            }} onChange={groupIconHandler} />
                         </Box>
                         <Box sx={{
                             width : "90%",
@@ -179,20 +212,7 @@ const Group = props => {
                             <Typography variant="body1" sx={{
                                 height : "30%"
                             }}>Select Contacts</Typography>
-                            <ContactList contacts={[
-                                {
-                                    name : "contact1",
-                                    email : "contact1@gmail.com"
-                                },
-                                {
-                                    name : "contact12",
-                                    email : "contact2@gmail.com"
-                                },
-                                {
-                                    name : "contact3",
-                                    email : "contact3@gmail.com"
-                                }
-                            ]}></ContactList>
+                            <ContactList setMembers={setMembers} contacts={contactData.contacts}></ContactList>
                             {/* <TextField id="filled-basic" autoComplete="new-password" variant="outlined" type="text" placeholder="Select Contacts" label="Name" InputProps={ {
                                 // autoComplete :"nope",
                                 startAdornment: (
@@ -210,7 +230,7 @@ const Group = props => {
                             display : "flex",
                             justifyContent : "flex-start"
                         }}>
-                            <Button variant="contained" sx={{
+                            <Button variant="contained" onClick={addGroupHandler}  sx={{
                                 height : "45px"
                             }}>
                                 Add Group
