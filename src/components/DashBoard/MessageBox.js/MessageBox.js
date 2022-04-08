@@ -1,6 +1,7 @@
 import { Box } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux";
 import { chatActions } from "../../../store/chat";
+import { groupActions } from "../../../store/group";
 import { getSocket } from "../../../utils/socketConn";
 import Message from "../Chats/Message";
 import "../scrollbarCSS.css";
@@ -39,6 +40,18 @@ const MessageBox = props => {
             if (chatData.currentEmail === data.sentBy) {
                 console.log(data);
                 dispatch(chatActions.addChat({ ...data, chatContent: data.chat }));
+            }
+        })
+        iocon.off("group_msg");
+        iocon.on("group_msg",(data) => {
+            console.log(data);
+            if(groupData.groupId === data.groupId){
+                let groupChats = Object.assign([],groupData.groupChats);
+                groupChats.push({chatId:{...data,chatContent : data.chat}});
+                console.log(groupChats);
+                dispatch(groupActions.getGroupChats({
+                    groupChats : groupChats
+                }));
             }
         })
     }

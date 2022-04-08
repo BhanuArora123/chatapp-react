@@ -36,7 +36,7 @@ const Group = props => {
                 groupMembers : group.groupId.members,
                 groupAdmin:group.groupId.creatorId
             }))
-            dispatch(fetchGroupChats(auth.token,group.groupId.groupName,group.groupId.creatorId));
+            dispatch(fetchGroupChats(auth.token,group.groupId.groupName,group.groupId.creatorId,group.groupId._id));
         }
     }
     const [members, setMembers] = useState([]);

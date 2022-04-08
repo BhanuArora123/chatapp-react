@@ -6,6 +6,10 @@ const MessageBar = props => {
     const chatData = useSelector(state => state.chat);
     const groupData = useSelector(state => state.group);
     let chatType = props.chatType;
+    const callAPerson = () => {
+        // show the pop up 
+        
+    }
     return (
         <Box sx={{
             width : "100%",
@@ -37,7 +41,7 @@ const MessageBar = props => {
                 alignItems : "center"
             }}>
                 <Search></Search>
-                <Phone></Phone>
+                <Phone onClick={callAPerson}></Phone>
                 <VideoCall></VideoCall>
                 <Person></Person>
                 <MoreHoriz></MoreHoriz>

@@ -10,7 +10,8 @@ const groupSlice = createSlice({
         groupMembers : undefined,
         groupChats : [],
         groupAdmin:undefined,
-        groups:[]
+        groups:[],
+        groupId : undefined
     },
     reducers : {
         updateGroupData(state , actions){
@@ -18,17 +19,21 @@ const groupSlice = createSlice({
             state.groupIcon = actions.payload.groupIcon;
             state.groupMembers = actions.payload.groupMember;
             state.groupAdmin = actions.payload.groupAdmin;
+            state.groupId = actions.payload.groupId;
         },
         getGroupChats(state,actions){
             state.groupChats = actions.payload.groupChats;
         },
         addGroups(state,actions){
             state.groups = actions.payload.groups;
+        },
+        updateGroupId (state,actions){
+            state.groupId = actions.payload.groupId;
         }
     }
 });
 export const groupActions = groupSlice.actions;
-export const fetchGroupChats = (token,groupName,groupAdminId) => {
+export const fetchGroupChats = (token,groupName,groupAdminId,groupId) => {
     return async (dispatch) => {
         let res = await axios.post("https://chatappbackend123456.herokuapp.com/displayGrpMessages",
             {
@@ -52,6 +57,9 @@ export const fetchGroupChats = (token,groupName,groupAdminId) => {
             return;
         }
         console.log(res.data);
+        dispatch(groupActions.updateGroupId({
+            groupId:groupId
+        }));
         dispatch(groupActions.getGroupChats({
             groupChats : res.data.chats
         }))
@@ -87,13 +95,14 @@ export const getGroups = (token) => {
                 groupName : groups[0].groupId.groupName,
                 groupIcon : groups[0].groupId.groupIcon,
                 groupMembers : groups[0].groupId.members,
-                groupAdmin:groups[0].groupId.creatorId
+                groupAdmin:groups[0].groupId.creatorId,
+                groupId : groups[0].groupId._id
             }));
-            dispatch(fetchGroupChats(token,groups[0].groupId.groupName,groups[0].groupId.creatorId))
+            dispatch(fetchGroupChats(token,groups[0].groupId.groupName,groups[0].groupId.creatorId,groups[0].groupId._id));
         }
     }
 }
-export const sendGroupMessage = (token,email,msg,groupName,creatorId) => {
+export const sendGroupMessage = (token,email,msg,groupName,creatorId,groupId) => {
     return async (dispatch) => {
         let res = await axios.post("https://chatappbackend123456.herokuapp.com/sendGrpMessage",{
             groupName,
@@ -116,7 +125,7 @@ export const sendGroupMessage = (token,email,msg,groupName,creatorId) => {
             return;
         }
         console.log(res);
-        dispatch(fetchGroupChats(token,groupName,creatorId));
+        dispatch(fetchGroupChats(token,groupName,creatorId,groupId));
     }
 }
 export const addGroup = (formData,token) => {

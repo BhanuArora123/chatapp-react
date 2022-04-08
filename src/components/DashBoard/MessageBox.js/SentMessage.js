@@ -73,7 +73,7 @@ const SentMessage = props => {
             }));
         }  
         if(chatType === "groups"){
-            dispatch(fetchGroupChats(auth.token,groupData.groupName,groupData.groupAdmin));
+            dispatch(fetchGroupChats(auth.token,groupData.groupName,groupData.groupAdmin,groupData.groupId));
         }else{
             dispatch(fetchChats(chatData.currentChatId,chatData.currentUserName,chatData.currentEmail,authData.token));
         }
@@ -97,7 +97,7 @@ const SentMessage = props => {
             return;
         }
         if(chatType === "groups"){
-            dispatch(sendGroupMessage(auth.token,auth.userData.email,msg,groupData.groupName,groupData.groupAdmin));
+            dispatch(sendGroupMessage(auth.token,auth.userData.email,msg,groupData.groupName,groupData.groupAdmin,groupData.groupId));
         }else{
             dispatch(sendMessage(msg,chats.currentEmail,chats.currentChatId,chats.currentUserName,auth.token));
         }

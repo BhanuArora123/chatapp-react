@@ -8,6 +8,19 @@
   align-items: center;  
 }
 
+.App::-webkit-scrollbar{
+  background-color: white;
+  opacity: 0.4;
+  width: 8px;
+}
+.App::-webkit-scrollbar-thumb{
+  background-color: gray;
+  border-radius: 20px;
+}
+.App::-webkit-scrollbar-track-piece{
+  opacity: 0.4;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

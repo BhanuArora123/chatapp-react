@@ -1,6 +1,6 @@
 .menu {
     width : 70px;
-    height: 100vh;
+    height: 100%;
     display: flex;
     justify-content: space-evenly;
     flex-direction: column;

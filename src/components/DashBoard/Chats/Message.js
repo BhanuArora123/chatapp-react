@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import {saveAs} from "file-saver";
 const Message = props => {
     const auth = useSelector(state => state.auth);
+    let messageDateTime = props.messageDateTime.split('T');
     const downloadNow = async () => {
         console.log(props.chatId);
         let downloadData = await axios.post("https://chatappbackend123456.herokuapp.com/downloadNow",{
@@ -77,7 +78,7 @@ const Message = props => {
                 display : "flex",
                 justifyContent : "flex-end",
                 alignItems : "center"
-            }}>{props.messageDateTime}</Typography>
+            }}>{messageDateTime[0] + "  "+messageDateTime[1].split(".")[0]}</Typography>
         </Box>
     )
 }
