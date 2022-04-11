@@ -32,7 +32,7 @@ const MessageBox = props => {
     const auth = useSelector(state => state.auth);
     const chatData = useSelector(state => state.chat);
     let messages = useSelector(state => state.chat).chats;
-    // recieving personal chats;
+    // recieving personal chats and group chats;
     let iocon = getSocket();
     if (iocon) {
         iocon.off("new_msg");

@@ -27,4 +27,11 @@ export const sendJoinRoomEvent = (roomId, userId) => {
         return "Socket is not yet connected";
     }
 }
+export const emitEvent = (event,data) => {
+    if(getIo){
+        getIo.emit(event,data);
+    }else{
+        return "Socket is not yet connected";
+    }
+}
 export default connectToSocket;
