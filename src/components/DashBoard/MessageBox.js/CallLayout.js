@@ -15,7 +15,7 @@ const callImageCss = {
 }
 const CallLayout = props => {
     return (
-        <Box sx={ flexBoxCss }>
+        <Box sx={ flexBoxCss } >
             <Box sx={ {
                 ...flexBoxCss,
                 ...callImageCss

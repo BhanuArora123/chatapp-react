@@ -5,23 +5,30 @@ import Modal from "../Modals/Modal";
 import { useRef, useState } from "react";
 import CallLayout from "./CallLayout";
 import { emitEvent, getSocket } from "../../../utils/socketConn";
+import abc from "../../../Images/ringtone.mp3";
 import connectToPeer from "../../../utils/peerConn";
 const MessageBar = props => {
     const chatData = useSelector(state => state.chat);
     const groupData = useSelector(state => state.group);
     const authData = useSelector(state => state.auth);
+    // const [playAudio , setPlayAudio] = useState
     let chatType = props.chatType;
+    const audioRef = useRef();
     let [videoElements, setVideoElements] = useState([]);
     console.log(videoElements);
     let peerid;
+    // let audio = new Audio("../../../Images/ringtone.mp3");
     const parser = new DOMParser();
     const [open, setOpen] = useState(false);
     const [callData, setCallData] = useState();
+    const mediaStreams = {};
     const acceptCall = () => {
         if (callData) {
             emitEvent("call-accepted", callData);
+            audioRef.current.pause();
         }
     }
+    
     // answer the call if called by other user
     let socketIo = getSocket();
     if (socketIo) {
@@ -30,20 +37,33 @@ const MessageBar = props => {
             let peerConn = connectToPeer();
             peerConn.on("open", (id) => {
                 navigator.mediaDevices.getUserMedia({
-                    video: true,
+                    video: false,
                     audio: true
                 })
                     .then((stream) => {
+                        let videoEle = document.createElement("video");
+                        if (!mediaStreams[stream.id]) {
+                            addVideoStream(videoEle, stream);
+                            mediaStreams[stream.id] = true;
+                        }
                         peerConn.on("call", (call) => {
                             console.log("I am called");
                             call.answer(stream);
                             call.on("stream", (otherUserStream) => {
                                 // console.log(otherUserStream);
                                 let videoEle = document.createElement("video");
-                                addVideoStream(videoEle, otherUserStream);
+                                if (!mediaStreams[otherUserStream.id]) {
+                                    addVideoStream(videoEle, otherUserStream);
+                                    mediaStreams[otherUserStream.id] = true;
+                                }
                             })
                         })
-                        socketIo.emit("call-accepted", { ...data, id: id })
+                        setCallData({
+                            ...data,
+                            id: id
+                        });
+                        // audio.play();
+                        audioRef.current.play();
                         setOpen(true);
                     })
             })
@@ -54,14 +74,15 @@ const MessageBar = props => {
         video.srcObject = stream;
         video.addEventListener("loadedmetadata", () => {
             video.play();
-            video.style.width="250px";
+            video.style.width = "250px";
             video.style.height = "250px";
             videoGrid.append(video);
         });
     };
     console.log("video call elements");
     console.log(videoElements);
-    const callAPerson = () => {
+    const callAPerson = (e) => {
+        e.stopPropagation();
         // show the pop up
         setOpen(!open);
         // create a new peer connection
@@ -78,18 +99,24 @@ const MessageBar = props => {
             });
         })
         navigator.mediaDevices.getUserMedia({
-            video: true,
+            video: false,
             audio: true
         }).then(stream => {
             const video = document.createElement("video");
-            addVideoStream(video, stream);
+            if (!mediaStreams[stream.id]) {
+                addVideoStream(video, stream);
+                mediaStreams[stream.id] = true;
+            }
             peerConn.on("call", (call) => {
                 console.log("I am called");
                 call.answer(stream);
                 call.on("stream", (otherUserStream) => {
                     // console.log(otherUserStream);
                     let videoEle = document.createElement("video");
-                    addVideoStream(videoEle, otherUserStream);
+                    if (!mediaStreams[otherUserStream.id]) {
+                        addVideoStream(videoEle, otherUserStream);
+                        mediaStreams[otherUserStream.id] = true;
+                    }
                 })
             })
             socketIo.on("user-accepted", (data) => {
@@ -99,7 +126,11 @@ const MessageBar = props => {
                 call.on("stream", (otherUserStream) => {
                     console.log(otherUserStream);
                     let videoEle = document.createElement("video");
-                    addVideoStream(videoEle, otherUserStream);
+                    alert("call accepted")
+                    if (!mediaStreams[otherUserStream.id]) {
+                        addVideoStream(videoEle, otherUserStream);
+                        mediaStreams[otherUserStream.id] = true;
+                    }
                 })
             })
         })
@@ -156,13 +187,19 @@ const MessageBar = props => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center"
-                } }>
+                } } onClick={ e => e.stopPropagation() }>
                     <CallLayout name="Bhanu Arora" status="Calling..." acceptCall={ acceptCall } callingData={ callData }>
 
                     </CallLayout>
-                    <div id="video-grid">
+                    <div id="video-grid" style={ {
+                        display: "none"
+                    } }>
 
                     </div>
+                    <audio
+                       ref={audioRef}>
+                        <source type="audio/mp3" src={ abc } />
+                    </audio>
                 </Box>
             </Modal>
         </Box>
